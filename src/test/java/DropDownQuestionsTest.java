@@ -1,11 +1,9 @@
-import POM.MainPageScooterPOM;
+import ru.praktikum.services.qa.scooter.pom.MainPageScooterPOM;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import static org.junit.Assert.assertEquals;
 
@@ -74,23 +72,8 @@ public class DropDownQuestionsTest {
     }
 
     @Test
-    public void questionsAndAnswersIsOkChrome() {
-        driver = new ChromeDriver();
-        driver.get(url);
-        MainPageScooterPOM mainPageScooterPOM = new MainPageScooterPOM(driver);
-        mainPageScooterPOM.waitForLoadMainPageScooter();
-        mainPageScooterPOM.scrollToQuestion(numberOfQuestion);
-        String actualQuestion = mainPageScooterPOM.getTextFromQuestion(numberOfQuestion);
-        assertEquals(expectedQuestion, actualQuestion);
-        mainPageScooterPOM.clickOnQuestion(numberOfQuestion);
-        mainPageScooterPOM.waitForLoadAnswer(numberOfQuestion);
-        String actualAnswer = mainPageScooterPOM.getTextFromAnswer(numberOfQuestion);
-        assertEquals(expectedAnswer, actualAnswer);
-    }
-
-    @Test
-    public void questionsAndAnswersIsOkMozilla() {
-        driver = new FirefoxDriver();
+    public void questionsAndAnswersIsOkTest() {
+        driver = WebDriverBrowser.getWebDriver(TypeBrowsers.CHROME);
         driver.get(url);
         MainPageScooterPOM mainPageScooterPOM = new MainPageScooterPOM(driver);
         mainPageScooterPOM.waitForLoadMainPageScooter();

@@ -1,4 +1,4 @@
-package POM;
+package ru.praktikum.services.qa.scooter.pom;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -12,59 +12,64 @@ public class OrderScooterPOM {
     private WebDriver driver;
 
     private By mainScreen = By.cssSelector("[id='root']");
-    private By buttonOrderBottom = By.cssSelector(".Button_Button__ra12g.Button_Middle__1CSJM");
-    private By buttonOrderTop = By.xpath(".//button[1][@class='Button_Button__ra12g']");
-    private By buttonCookieAccept = By.cssSelector("[id='rcc-confirm-button']");
 
+    // Заголовок "Для кого самокат"
     private By titleFirstInformationScreen = By.cssSelector("[class='Order_Header__BZXOb']");
+    // Поля для ввода имени
     private By nameField = By.xpath(".//input[@placeholder='* Имя']");
+    // Поля для ввода фамилии
     private By surnameField = By.xpath(".//input[@placeholder='* Фамилия']");
+    // Поля для ввода адреса
     private By addressField = By.xpath(".//input[@placeholder='* Адрес: куда привезти заказ']");
+    // Поля для ввода станции метро
     private By metroStationField = By.xpath(".//input[@class='select-search__input']");
+    // Станция метро в списке
     private By metroStationItem = By.xpath(".//li[@data-index='0']");
+    // Поля для ввода телефона
     private By phoneField = By.xpath(".//input[@placeholder='* Телефон: на него позвонит курьер']");
+    // Кнопка "далее" на экране "Для кого самокат"
     private By buttonFirstContinue = By.cssSelector(".Button_Button__ra12g.Button_Middle__1CSJM");
 
+    // Заголовок "Про аренду"
     private By titleSecondInformationScreen = By.xpath(".//div[@class='Order_Header__BZXOb']");
+    // Поля для ввода даты аренды
     private By dateDeliveryField = By.xpath(".//input[@placeholder='* Когда привезти самокат']");
+    // Поле "Срок аренды"
     private By durationDropDownMenu = By.cssSelector(".Dropdown-placeholder");
+    // "Семь дней" в выпадающем списке срока аренды
     private By durationItemSeven = By.xpath(".//div[@class='Dropdown-menu']//div[7]");
+    // Чекбокс для выбора цвета "черный жемчуг"
     private By checkBoxBlackColor = By.xpath(".//label[@class='Checkbox_Label__3wxSf' and @for='black']");
+    // Поля для ввода комментария
     private By commentField = By.xpath(".//div[@class='Input_InputContainer__3NykH']//input[@class='Input_Input__1iN_Z Input_Responsible__1jDKN']");
+    // Кнопка "Заказать" на экране "Про аренду"
     private By buttonSecondContinue = By.xpath(".//div[@class='Order_Buttons__1xGrp']//button[2]");
 
-    private By cofirmOrderButton = By.xpath(".//div[@class='Order_Modal__YZ-d3']//div[@class='Order_Buttons__1xGrp']//button[2]");
-
+    // Кнопка "Да"
+    private By confirmOrderButton = By.xpath(".//div[@class='Order_Modal__YZ-d3']//div[@class='Order_Buttons__1xGrp']//button[2]");
+    // Текст о том, что оформления заказа выполнено
     private By finishPopUpText = By.xpath(".//div[@class='Order_ModalHeader__3FDaJ']");
 
     public OrderScooterPOM(WebDriver driver) {
         this.driver = driver;
     }
 
-    public void clickOrderButton(Boolean isClickOnTopButton) {
-        waitForLoadMainPage();
-        if (isClickOnTopButton) {
-            clickOnButtonDeliveryTop();
-        } else {
-            scrollToButtonDeliveryBottom();
-            clickOnButtonDeliveryBottom();
-        }
-        waitForLoadFirstInformationScreen();
-    }
-
     public void fillInformationFirstScreenOrder(String name, String surname, String address, String metroStation, String mobilePhone) {
-        ifNeedClickCookieButton();
+        waitForLoadFirstInformationScreen();
         setNameField(name);
         setSurnameField(surname);
         setAddressField(address);
         setMetroStationField(metroStation);
         clickMetroStationItem();
         setMobilePhoneField(mobilePhone);
-        clickButtonFirstContinue();
-        waitForLoadSecondInformationScreen();
+    }
+
+    public void clickButtonFirstContinue() {
+        driver.findElement(buttonFirstContinue).click();
     }
 
     public void fillInformationSecondScreenOrder(String date, String comment) {
+        waitForLoadSecondInformationScreen();
         setDateDeliveryField(date);
         hideCalendar();
         clickDurationDropDownMenu();
@@ -77,7 +82,7 @@ public class OrderScooterPOM {
     }
 
     public void clickFinish() {
-        driver.findElement(cofirmOrderButton).click();
+        driver.findElement(confirmOrderButton).click();
     }
 
     public String geTextFinishBlock() {
@@ -88,19 +93,11 @@ public class OrderScooterPOM {
         driver.findElement(titleSecondInformationScreen).click();
     }
 
-    private void ifNeedClickCookieButton() {
-        if (driver.findElement(buttonCookieAccept).isDisplayed()) driver.findElement(buttonCookieAccept).click();
-    }
-
-    private void scrollToButtonDeliveryBottom() {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", driver.findElement(buttonOrderBottom));
-    }
-
     private void waitForLoadConfirmationPopUp() {
         new WebDriverWait(driver, Duration.ofSeconds(3L)).until(
                 driver -> (
-                        driver.findElement(cofirmOrderButton) != null
-                                && driver.findElement(cofirmOrderButton).isDisplayed()
+                        driver.findElement(confirmOrderButton) != null
+                                && driver.findElement(confirmOrderButton).isDisplayed()
                 )
         );
     }
@@ -153,10 +150,6 @@ public class OrderScooterPOM {
         driver.findElement(metroStationItem).click();
     }
 
-    private void clickButtonFirstContinue() {
-        driver.findElement(buttonFirstContinue).click();
-    }
-
     private void setMobilePhoneField(String phone) {
         driver.findElement(phoneField).sendKeys(phone);
     }
@@ -170,21 +163,13 @@ public class OrderScooterPOM {
         );
     }
 
-    private void waitForLoadMainPage() {
+    public void waitForLoadMainPage() {
         new WebDriverWait(driver, Duration.ofSeconds(3L)).until(
                 driver -> (
                         driver.findElement(mainScreen) != null
                                 && driver.findElement(mainScreen).isDisplayed()
                 )
         );
-    }
-
-    private void clickOnButtonDeliveryTop() {
-        driver.findElement(buttonOrderTop).click();
-    }
-
-    private void clickOnButtonDeliveryBottom() {
-        driver.findElement(buttonOrderBottom).click();
     }
 
     private void waitForLoadFirstInformationScreen() {

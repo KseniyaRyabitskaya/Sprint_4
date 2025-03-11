@@ -1,12 +1,11 @@
-import POM.OrderScooterPOM;
+import ru.praktikum.services.qa.scooter.pom.MainPageScooterPOM;
+import ru.praktikum.services.qa.scooter.pom.OrderScooterPOM;
 import org.hamcrest.MatcherAssert;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
 import static org.hamcrest.CoreMatchers.startsWith;
 
@@ -36,10 +35,9 @@ public class OrderScooterTest {
         this.date = date;
         this.comment = comment;
         this.isClickOnOrderTopButton = isClickOnOrderTopButton;
-
     }
 
-    @Parameterized.Parameters // добавили аннотацию
+    @Parameterized.Parameters
     public static Object[][] getTestData() {
         return new Object[][]{
                 {
@@ -76,25 +74,16 @@ public class OrderScooterTest {
     }
 
     @Test
-    public void finishOrderBlockIsVisibleFirefox() {
-        driver = new FirefoxDriver();
+    public void finishOrderBlockIsVisibleTest() {
+        driver = WebDriverBrowser.getWebDriver(TypeBrowsers.CHROME);
         driver.get(url);
+        MainPageScooterPOM mainPageScooterPOM = new MainPageScooterPOM(driver);
         OrderScooterPOM orderScooterPOM = new OrderScooterPOM(driver);
-        orderScooterPOM.clickOrderButton(isClickOnOrderTopButton);
+        orderScooterPOM.waitForLoadMainPage();
+        mainPageScooterPOM.clickOrderButton(isClickOnOrderTopButton);
         orderScooterPOM.fillInformationFirstScreenOrder(name, surname, address, metroStation, mobilePhone);
-        orderScooterPOM.fillInformationSecondScreenOrder(date, comment);
-        orderScooterPOM.clickFinish();
-        String actualFinishBlockText = orderScooterPOM.geTextFinishBlock();
-        MatcherAssert.assertThat(actualFinishBlockText, startsWith(textFinalBlock));
-    }
-
-    @Test
-    public void finishOrderBlockIsVisibleChrome() {
-        driver = new ChromeDriver();
-        driver.get(url);
-        OrderScooterPOM orderScooterPOM = new OrderScooterPOM(driver);
-        orderScooterPOM.clickOrderButton(isClickOnOrderTopButton);
-        orderScooterPOM.fillInformationFirstScreenOrder(name, surname, address, metroStation, mobilePhone);
+        mainPageScooterPOM.ifNeedClickCookieButton();
+        orderScooterPOM.clickButtonFirstContinue();
         orderScooterPOM.fillInformationSecondScreenOrder(date, comment);
         orderScooterPOM.clickFinish();
         String actualFinishBlockText = orderScooterPOM.geTextFinishBlock();
